@@ -1,0 +1,992 @@
+{
+	"info": {
+		"_postman_id": "bc07647c-eeef-4959-9da5-79cf5faea8d2",
+		"name": "POS Malaysia API's",
+		"description": "# POS Malaysia API Collection Overview\n\nThis collection provides automated test cases for various POS Malaysia APIs. The tests include validation for positive and negative scenarios, ensuring API functionality, performance, and reliability. Below is an overview of the API structure and the functionalities they provide.\n\n## APIs in this Collection\n\n### 1\\. **Get Countries API**\n\n- **Endpoint**: `/countries`\n    \n- **Purpose**: Fetches a list of all countries supported by the POS Malaysia services.\n    \n- **Scenarios Tested**:\n    \n    - Positive Testing: Valid URL and successful response.\n        \n    - Negative Testing: Invalid or incorrect endpoint.\n        \n\n### 2\\. **Get States API**\n\n- **Endpoint**: `/getStateByPostcode`\n    \n- **Purpose**: Retrieves the state, city, and other details based on the provided postal code.\n    \n- **Scenarios Tested**:\n    \n    - Positive Testing: Valid postal code returns correct state and city details.\n        \n    - Negative Testing: Invalid postal code or incorrect endpoint.\n        \n\n### 3\\. **Rate Calculator API**\n\n- **Endpoint**: `/price`\n    \n- **Purpose**: Calculates the shipping rate based on provided details such as weight, sender and receiver postcodes, and country.\n    \n- **Scenarios Tested**:\n    \n    - Positive Testing: Valid details return the correct shipping rate.\n        \n    - Negative Testing: Missing or invalid input fields such as `country`, `weight`, or `postcode`.\n        \n\n## API Structure and Key Highlights\n\n- **Base URL**: `https://www-api.pos.com.my/api`\n    \n    - All endpoints use this base URL.\n        \n- **HTTP Methods**:\n    \n    - `GET`: Used for fetching data such as countries or states.\n        \n    - `POST`: Used for operations like calculating shipping rates.\n        \n- **Request Parameters**:\n    \n    - **Query Parameters** (for `GET` requests): Example – `/countries`.\n        \n    - **Form Data** (for `POST` requests): Includes fields like `country`, `weight`, and `postcode`.\n        \n- **Response Structure**:\n    \n    - `[ { \"key\": \"value\" }]`\n        \n        - Returns an array of objects with relevant details such as `CountryCode`, `CountryName`, `stateNm`, etc.\n            \n    - `{ \"data\": null, \"error\": { \"status\": , \"name\": \"\", \"message\": \"\", \"details\": {} }}`\n        \n        - Contains fields such as `status`, `name`, and `message` for troubleshooting issues.\n            \n\n## Test Coverage\n\n1. **Response Validation**:\n    \n    - Ensures the response contains the expected fields and data types.\n        \n2. **Status Code Verification**:\n    \n    - Confirms appropriate HTTP status codes (e.g., 200, 404, 400).\n        \n3. **Performance Testing**:\n    \n    - Validates that response times are within acceptable limits (under 5 seconds).\n        \n4. **Error Handling**:\n    \n    - Ensures the API handles invalid inputs gracefully, returning meaningful error messages.\n        \n\n## Notes\n\n- The collection is designed with modular and reusable variables defined in the **POS Malaysia** environment.\n    \n- Each request includes detailed test scripts to automate validation of API functionality.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29674791",
+		"_collection_link": "https://red-shuttle-946380.postman.co/workspace/f0cc86db-4050-43aa-80d7-f4ed72f2ed66/collection/29674791-bc07647c-eeef-4959-9da5-79cf5faea8d2?action=share&source=collection_link&creator=29674791"
+	},
+	"item": [
+		{
+			"name": "Get Countries Api Testing",
+			"item": [
+				{
+					"name": "List all the countries(Positive testing with valid URL).",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Here I'm Asserting the response code should be 200.",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Here I'm Asserting that the response should not be empty.",
+									"pm.test(\"Response Should not be empty\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an(\"array\").that.is.not.empty;",
+									"});",
+									"",
+									"//Here I'm Asserting that all the CountryCode and CountryName entries in the response should be string and non-empty.",
+									"pm.test(\"Response has valid CountryCode and CountryName for all entries\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an(\"array\").that.is.not.empty;",
+									"    response.forEach((item, index) => {",
+									"        pm.expect(item).to.have.property(\"CountryCode\");",
+									"        pm.expect(item.CountryCode).to.be.a(\"string\").that.is.not.empty;",
+									"        pm.expect(item).to.have.property(\"CountryName\");",
+									"        pm.expect(item.CountryName).to.be.a(\"string\").that.is.not.empty;",
+									"    });",
+									"});",
+									"",
+									"//Here I'm Asserting that the response time should be less then 5 seconds.",
+									"pm.test(\"Response time is within acceptable limit\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"//Here I'm Asserting the CountryCode and CountryName for Malaysia.",
+									"pm.test(\"Response contains specific CountryCode and CountryName\", function () {",
+									"    const response = pm.response.json();",
+									"    const expectedCountryCode = \"MY\"; ",
+									"    const expectedCountryName = \"Malaysia\";",
+									"    const matchingEntry = response.find(item => ",
+									"        item.CountryCode === expectedCountryCode && item.CountryName === expectedCountryName",
+									"    );",
+									"    pm.expect(matchingEntry).to.not.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/countries",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"countries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all the countries(Negative testing with wrong/invalid URL).",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Here I'm Asserting the response code should be 404.",
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"",
+									"//Here I'm Asserting the Error response.",
+									"pm.test(\"Response has expected error structure\", function () {",
+									"    const response = pm.response.json();",
+									"",
+									"    // Check the response contains \"data\" and \"error\"",
+									"    pm.expect(response).to.have.property(\"data\").that.is.null;",
+									"    pm.expect(response).to.have.property(\"error\");",
+									"",
+									"    // Validate the \"error\" object",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"status\", 404);",
+									"    pm.expect(error).to.have.property(\"name\", \"NotFoundError\");",
+									"",
+									"    // Check that \"details\" exists and is an object (can be empty)",
+									"    pm.expect(error).to.have.property(\"details\").that.is.an(\"object\");",
+									"});",
+									"",
+									"//Here I'm Asserting the Error message is right or not.",
+									"pm.test(\"Validating that the response contains expected error messages\", function () {",
+									"    const response = pm.response.json();",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"message\", \"Not Found\");",
+									"});",
+									"",
+									"",
+									"//Here I'm Asserting that the response time should be less then 5 seconds.",
+									"pm.test(\"Response time is within acceptable limit\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/countrries",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"countrries"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get states Api Testing",
+			"item": [
+				{
+					"name": "Get states using postal code(Positive Testing with valid Postcode).",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Here I'm Asserting the response code should be 200.",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Here I'm Asserting that the response should not be empty.",
+									"pm.test(\"Response Shoudl not be empty\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an(\"array\").that.is.not.empty;",
+									"});",
+									"",
+									"//Here I'm Asserting that the response should have Perak as stateNm and city as SUNGKAI because I've used Perak postal code in the Body.",
+									"pm.test(\"Response contains valid stateNm, city, and postCode acording to the postCode in the body\", function () {",
+									"    const response = pm.response.json();",
+									"    const stateData = response[0];",
+									"    pm.expect(stateData.stateNm).to.equal(\"Perak\");",
+									"    pm.expect(stateData.city).to.equal(\"SUNGKAI\");",
+									"    const perakPostCode = pm.environment.get(\"perakPostCode\");",
+									"    pm.expect(stateData.postCode).to.equal(perakPostCode);",
+									"});",
+									"",
+									"//Here I'm Asserting that the response time should be less then 5 seconds.",
+									"pm.test(\"Response time is within acceptable limit\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "postCode",
+									"value": "{{perakPostCode}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/getStateByPostcode",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"getStateByPostcode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get states using postal code(Negative testing with wrong/invalid URL).",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Here I'm Asserting the response code should be 405.",
+									"pm.test(\"Status code is 405\", function () {",
+									"    pm.response.to.have.status(405);",
+									"});",
+									"",
+									"//Here I'm Asserting that the response time should be less then 5 seconds.",
+									"pm.test(\"Response time is within acceptable limit\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"//Here I'm Asserting the response error message.",
+									"pm.test(\"Validate error response for invalid method\", function () {",
+									"    const responseText = pm.response.text();",
+									"    pm.expect(responseText).to.be.a(\"string\").that.is.not.empty;",
+									"",
+									"    // Validate that the response contains expected error messages",
+									"    const expectedMessages = [\"Method Not Allowed\"];",
+									"    pm.expect(expectedMessages).to.include(responseText);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "postCode",
+									"value": "{{perakPostCode}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/getStateByPostcoode",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"getStateByPostcoode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get states using postal code(Negative Testing with Invalid Postcode).",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Here I'm Asserting the response code should be 404.",
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"//Here I'm Asserting the Error response.",
+									"pm.test(\"Response has expected error structure\", function () {",
+									"    const response = pm.response.json();",
+									"",
+									"    // Check the response contains \"data\" and \"error\"",
+									"    pm.expect(response).to.have.property(\"data\").that.is.null;",
+									"    pm.expect(response).to.have.property(\"error\");",
+									"",
+									"    // Validate the \"error\" object",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"status\", 400);",
+									"    pm.expect(error).to.have.property(\"name\", \"Error\");",
+									"});",
+									"",
+									"//Here I'm Asserting the Error message is right or not.",
+									"pm.test(\"Validating that the response contains expected error messages\", function () {",
+									"    const response = pm.response.json();",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"message\", \"Post Code Not Exist\");",
+									"});",
+									"",
+									"//Here I'm Asserting that the response time should be less then 5 seconds.",
+									"pm.test(\"Response time is within acceptable limit\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "postCode",
+									"value": "{{invalidPostCode}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/getStateByPostcode",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"getStateByPostcode"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rate calculator Api Testing",
+			"item": [
+				{
+					"name": "Calculates the rate(Positive testing with valid url).",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Here I'm Asserting the response code should be 200.",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Here I'm Asserting that the response should not be empty.",
+									"pm.test(\"Response Should not be Empty\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.be.an(\"array\").that.is.not.empty;",
+									"});",
+									"",
+									"//Here I'm Asserting that all the keys should be in the response. I've asserted only the first one you can add more if you want.",
+									"pm.test(\"Check that all required keys exist\", function() {",
+									"    const response = pm.response.json();",
+									"    const responseData = response[0];",
+									"    pm.expect(responseData).to.have.property('first');",
+									"    //... (other property checks remain unchanged)",
+									"});",
+									"",
+									"//Here I'm Asserting that all the keys types should be string. I've asserted only the first one you can add more if you want.",
+									"pm.test(\"Check types of keys\", function() {",
+									"    const response = pm.response.json();",
+									"    const responseData = response[0];",
+									"    pm.expect(typeof responseData.first).to.eql('string');",
+									"    //... (other type checks remain unchanged)",
+									"});",
+									"",
+									"//Here I'm Asserting that some important numerical values should not be zero like totalAmount. I've asserted only the totalAmount you can add more if you want.",
+									"pm.test(\"Check for valid numerical values\", function() {",
+									"    const response = pm.response.json();",
+									"    const responseData = response[0];",
+									"    pm.expect(parseFloat(responseData.totalAmount)).to.be.above(0);",
+									"    //... (other numerical value checks remain unchanged)",
+									"});",
+									"",
+									"//Here I'm Asserting that isDomestic value should be boolean. ",
+									"pm.test(\"Check isDomestic is a boolean\", function() {",
+									"    const response = pm.response.json();",
+									"    const responseData = response[0];",
+									"    pm.expect(typeof responseData.isDomestic).to.eql('boolean');",
+									"});",
+									"",
+									"//Here I'm Asserting the estimateDelivery message format. ",
+									"pm.test(\"Check estimateDelivery format\", function() {",
+									"    const response = pm.response.json();",
+									"    const responseData = response[0];",
+									"    pm.expect(responseData.estimateDelivery).to.match(/^\\d{1} - \\d{1} working days$/);",
+									"});",
+									"",
+									"//Here I'm Asserting that the totalAmount and fuelCharge values should be greater then zero and not null.",
+									"pm.test(\"Check totalAmount and fuelCharge are non-null\", function() {",
+									"    const response = pm.response.json();",
+									"    const responseData = response[0];",
+									"    pm.expect(responseData.totalAmount).to.not.be.null;",
+									"    pm.expect(responseData.fuelCharge).to.not.be.null;",
+									"    pm.expect(parseFloat(responseData.fuelCharge)).to.be.above(0);",
+									"});",
+									"",
+									"",
+									"//Here I'm Asserting that the response time should be less than 5 seconds.",
+									"pm.test(\"Response time is within acceptable limit\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "country",
+									"value": "Malaysia",
+									"type": "text"
+								},
+								{
+									"key": "weight",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "postcodeFrom",
+									"value": "{{postcodeFrom}}",
+									"type": "text"
+								},
+								{
+									"key": "postcodeTo",
+									"value": "{{postcodeTo}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/price",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"price"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calculates the rate(Negative testing with wrong/invalid URL).",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Here I'm Asserting the response code should be 405.",
+									"pm.test(\"Status code is 405\", function () {",
+									"    pm.response.to.have.status(405);",
+									"});",
+									"",
+									"//Here I'm Asserting that the response time should be less then 5 seconds.",
+									"pm.test(\"Response time is within acceptable limit\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									"//Here I'm Asserting the Error message in response.",
+									"pm.test(\"Validate error response for invalid method\", function () {",
+									"    const responseText = pm.response.text();",
+									"    pm.expect(responseText).to.be.a(\"string\").that.is.not.empty;",
+									"",
+									"    // Validate that the response contains expected error messages",
+									"    const expectedMessages = [\"Method Not Allowed\"];",
+									"    pm.expect(expectedMessages).to.include(responseText);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "country",
+									"value": "Malaysia",
+									"type": "text"
+								},
+								{
+									"key": "weight",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "postcodeFrom",
+									"value": "{{postcodeFrom}}",
+									"type": "text"
+								},
+								{
+									"key": "postcodeTo",
+									"value": "{{postcodeTo}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/priice",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"priice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calculates the rate(Negative testing with Invalid/Empty country).",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Here I'm Asserting the response code should be 400.",
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"//Here I'm Asserting the Error response structure.",
+									"pm.test(\"Response has expected error structure\", function () {",
+									"    const response = pm.response.json();",
+									"",
+									"    // Check the response contains \"data\" and \"error\"",
+									"    pm.expect(response).to.have.property(\"data\").that.is.null;",
+									"    pm.expect(response).to.have.property(\"error\");",
+									"",
+									"    // Validate the \"error\" object",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"status\", 400);",
+									"    pm.expect(error).to.have.property(\"name\", \"Error\");",
+									"});",
+									"",
+									"//Here I'm Asserting the Error response message.",
+									"pm.test(\"Validating that the response contains expected error messages\", function () {",
+									"    const response = pm.response.json();",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"message\", \"Country is required\");",
+									"});",
+									"",
+									"//Here I'm Asserting that the response time should be less then 5 seconds.",
+									"pm.test(\"Response time is within acceptable limit\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "country",
+									"value": "Malaysia",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "weight",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "postcodeFrom",
+									"value": "{{postcodeFrom}}",
+									"type": "text"
+								},
+								{
+									"key": "postcodeTo",
+									"value": "{{postcodeTo}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/price",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"price"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calculates the rate(Negative testing with Invalid/Empty weight).",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Here I'm Asserting the response code should be 400.",
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"//Here I'm Asserting the Error response structure.",
+									"pm.test(\"Response has expected error structure\", function () {",
+									"    const response = pm.response.json();",
+									"",
+									"    // Check the response contains \"data\" and \"error\"",
+									"    pm.expect(response).to.have.property(\"data\").that.is.null;",
+									"    pm.expect(response).to.have.property(\"error\");",
+									"",
+									"    // Validate the \"error\" object",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"status\", 400);",
+									"    pm.expect(error).to.have.property(\"name\", \"Error\");",
+									"});",
+									"",
+									"//Here I'm Asserting the Error response message.",
+									"pm.test(\"Validating that the response contains expected error message\", function () {",
+									"    const response = pm.response.json();",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"message\", \"Weight is required\");",
+									"});",
+									"",
+									"//Here I'm Asserting that the response time should be less then 5 seconds.",
+									"pm.test(\"Response time is within acceptable limit\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "country",
+									"value": "Malaysia",
+									"type": "text"
+								},
+								{
+									"key": "weight",
+									"value": "10",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "postcodeFrom",
+									"value": "{{postcodeFrom}}",
+									"type": "text"
+								},
+								{
+									"key": "postcodeTo",
+									"value": "{{postcodeTo}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/price",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"price"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calculates the rate(Negative testing with Invalid/Empty postcodeFrom).",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Here I'm Asserting the response code should be 400.",
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"//Here I'm Asserting the Error response structure.",
+									"pm.test(\"Response has expected error structure\", function () {",
+									"    const response = pm.response.json();",
+									"",
+									"    // Check the response contains \"data\" and \"error\"",
+									"    pm.expect(response).to.have.property(\"data\").that.is.null;",
+									"    pm.expect(response).to.have.property(\"error\");",
+									"",
+									"    // Validate the \"error\" object",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"status\", 400);",
+									"    pm.expect(error).to.have.property(\"name\", \"Error\");",
+									"});",
+									"",
+									"//Here I'm Asserting the Error response message.",
+									"pm.test(\"Validating that the response contains expected error messages\", function () {",
+									"    const response = pm.response.json();",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"message\", \"Invalid sender postcode. Sender postCode can only contain number\");",
+									"});",
+									"",
+									"//Here I'm Asserting that the response time should be less then 5 seconds.",
+									"pm.test(\"Response time is within acceptable limit\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "country",
+									"value": "Malaysia",
+									"type": "text"
+								},
+								{
+									"key": "weight",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "postcodeFrom",
+									"value": "{{postcodeFrom}}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "postcodeTo",
+									"value": "{{postcodeTo}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/price",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"price"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calculates the rate(Negative testing with Invalid/Empty postcodeTo).",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Here I'm Asserting the response code should be 400.",
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"//Here I'm Asserting the Error response structure.",
+									"pm.test(\"Response has expected error structure\", function () {",
+									"    const response = pm.response.json();",
+									"",
+									"    // Check the response contains \"data\" and \"error\"",
+									"    pm.expect(response).to.have.property(\"data\").that.is.null;",
+									"    pm.expect(response).to.have.property(\"error\");",
+									"",
+									"    // Validate the \"error\" object",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"status\", 400);",
+									"    pm.expect(error).to.have.property(\"name\", \"Error\");",
+									"});",
+									"",
+									"//Here I'm Asserting the Error response message.",
+									"pm.test(\"Validating that the response contains expected error messages\", function () {",
+									"    const response = pm.response.json();",
+									"    const error = response.error;",
+									"    pm.expect(error).to.have.property(\"message\", \"Invalid receiver postcode. Receiver postCode can only contain number\");",
+									"});",
+									"",
+									"//Here I'm Asserting that the response time should be less then 5 seconds.",
+									"pm.test(\"Response time is within acceptable limit\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "country",
+									"value": "Malaysia",
+									"type": "text"
+								},
+								{
+									"key": "weight",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "postcodeFrom",
+									"value": "{{postcodeFrom}}",
+									"type": "text"
+								},
+								{
+									"key": "postcodeTo",
+									"value": "{{postcodeTo}}",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/price",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"price"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

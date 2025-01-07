@@ -1,5 +1,11 @@
 # POS Malaysia API Automation
 
+## Collection Run Result
+
+Below is a screenshot of the test run results for the Postman collection, showcasing the successful execution of all test cases:
+
+![Collection Run Result](https://drive.google.com/file/d/1s6l5Gzdt2dsfXzPOp0zf67PgalvtsmPX/view?usp=sharing)
+
 This repository contains the Postman collection and environment configuration for automating the testing of POS Malaysia APIs. Follow the steps below to set up the collection and run it on your local machine.
 
 ## Prerequisites

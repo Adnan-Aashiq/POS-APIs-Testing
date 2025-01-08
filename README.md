@@ -22,8 +22,11 @@ Below is a screenshot of the test run results for the Postman collection, showca
    ```bash
    git clone https://github.com/Adnan-Aashiq/POS-APIs-Testing.git
    ```
+   or you can download the zip files through github by following the steps mentioned in the screenshot
+   
+   <img width="1512" alt="Screenshot 2025-01-08 at 10 09 22 PM" src="https://github.com/user-attachments/assets/52180854-1d68-4d59-9bdf-6a256b5ba990" />
 
-2. Open Postman and import the collection and environment files:
+3. Open Postman and import the collection and environment files:
    - **Import Collection**:
      1. Go to the **Collections** tab in Postman.
      2. Click on **Import**.
@@ -33,7 +36,7 @@ Below is a screenshot of the test run results for the Postman collection, showca
      2. Click on **Import**.
      3. Select the file `POS Malaysia.postman_environment.json` from the cloned repository.
 
-3. Select the imported environment:
+4. Select the imported environment:
    - Click on the **Environment dropdown** in the top-right corner of Postman.
    - Select the **POS Malaysia** environment.
 
